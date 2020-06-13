@@ -6,6 +6,7 @@ import pandas as pd
 import plotly.graph_objs as go
 import plotly.express as px
 
+# 0. Set the stylesheet
 external_stylesheets = ["https://cdn.jsdelivr.net/npm/picnic"]
     # 'https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -17,18 +18,28 @@ df_case = pd.read_csv('./data/Case.csv')
 dict_num_cases = dict(df_case['infection_case'].value_counts())
 dict_total_confirmed = dict(df_case[['infection_case', 'confirmed']].groupby('infection_case').sum()['confirmed'])
 
-df_region = pd.read_csv('.data/Region.csv')
+df_patients = pd.read_csv('./data/PatientInfo.csv')
+df_region_count = df_patients[['province', 'patient_id']].groupby('province', as_index=False).count()
+
+df_region = pd.read_csv('./data/Region.csv')
 df_coord = df_region[['code','province','latitude', 'longitude']]
 
 # 3. Create a plotly figure
-fig = px.choropleth_mapbox(geojson=counties, locations='fips', color='unemp',
+fig = px.choropleth_mapbox(df_region_count, locations='province', color='patient_id',
                            color_continuous_scale="Viridis",
                            range_color=(0, 12),
                            mapbox_style="carto-positron",
-                           zoom=3, center = {"lat": 37.0902, "lon": -95.7129},
-                           opacity=0.5,
-                           labels={'unemp':'unemployment rate'}
-                          )
+                           zoom=3,
+                           opacity=0.5
+                           )
+
+fig.update_layout(mapbox_style="carto-positron",
+                  mapbox_zoom=6,
+                  mapbox_center = {"lat": 37.566953, "lon": 126.977977})
+                #   margin=dict(l=10, r=500, t=0, b=0))
+
+                  	
+
 # trace_1 = go.Choropleth(locationmode='ISO-3', locations=['KOR'])
 # layout = go.Layout(title = 'Map of South Korea',
 #                    hovermode = 'closest')
@@ -63,11 +74,12 @@ app.layout = html.Div(children=[
                     type='bar',
                     name='Total Confirmed')],
             'layout': {
-                'title': 'Total Confirmed Per Infection Cases',
+                'title': 'Total Confirmed By Case',
                     }
             }
         )
 ])
 
+# 5. Set the executable command
 if __name__ == '__main__':
     app.run_server(debug=True)
