@@ -7,18 +7,23 @@ import json
 import plotly.graph_objs as go
 import plotly.express as px
 
+######################################
 # 0. SET STYLESHEET
 external_stylesheets = ["https://cdn.jsdelivr.net/npm/picnic"]
     # 'https://codepen.io/chriddyp/pen/bWLwgP.css']
 
+######################################
 # 1. LAUNCH APP
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
+######################################
 # 2. IMPORT & SET DATA
 df_case = pd.read_csv('./data/Case.csv')
 df_patients = pd.read_csv('./data/PatientInfo.csv')
 df_patients['province'].replace({'Jeju-do', 'Jeju'}, inplace=True) # normalize value for Jeju
 df_region = pd.read_csv('./data/Region.csv')
+with open("data/KOR_adm_shp/KOR_adm1.geojson", "r", encoding="utf8") as read_file:
+    geojson_1 = json.load(read_file)
 
 # 2a. Daily Confirmed
 df_daily_confirmed = df_patients[['patient_id','confirmed_date']].groupby('confirmed_date', as_index=False).count()
@@ -41,26 +46,12 @@ for i, stat in enumerate(stat_names):
 df_confirmed_by_case = df_case[['infection_case', 'confirmed']].groupby('infection_case', as_index=False).sum()
 df_confirmed_by_case.rename(columns={'confirmed':'total_confirmed'},inplace=True)
 
-
-
-###########################################
-dict_num_cases = dict(df_case['infection_case'].value_counts())
-dict_total_confirmed = dict(df_case[['infection_case', 'confirmed']].groupby('infection_case').sum()['confirmed'])
-
-
-# df_region_count = df_patients[['province', 'patient_id']].groupby('province', as_index=False).count()
-# df_coord = df_region[['code','province','latitude', 'longitude']]
-
-with open("data/KOR_adm_shp/KOR_adm1.geojson", "r", encoding="utf8") as read_file:
-    geojson_1 = json.load(read_file)
-
+# 2d. Choropleth Map
 df_prov_patients = df_patients[['province', 'patient_id']].groupby('province', as_index=False).count()
 df_prov_patients = df_prov_patients.rename(columns={'patient_id':'Number of Patients'})
-###########################################
+
+######################################
 # 3. CREATE PLOTLY FIGURES
-fig_0 = go.Figure(data=[go.Table(header=dict(values=['Statistic', 'Value']),
-                 cells=dict(values=[stat_names, stat_values]))
-                     ])
 
 fig_1 = px.choropleth_mapbox(df_prov_patients, geojson=geojson_1, color="Number of Patients",
                            color_continuous_scale='amp',
@@ -68,18 +59,8 @@ fig_1 = px.choropleth_mapbox(df_prov_patients, geojson=geojson_1, color="Number 
                            center={"lat": 36.7331489, "lon": 128.1328623},
                            mapbox_style="carto-positron", zoom=5, opacity=.33)
 
-# fig.update_layout(mapbox_style="carto-positron",
-#                   mapbox_zoom=6,
-#                   mapbox_center = {"lat": 37.566953, "lon": 126.977977})
-                #   margin=dict(l=10, r=500, t=0, b=0))
 
-                  	
-
-# trace_1 = go.Choropleth(locationmode='ISO-3', locations=['KOR'])
-# layout = go.Layout(title = 'Map of South Korea',
-#                    hovermode = 'closest')
-# fig = go.Figure(data = [trace_1], layout = layout)
-
+######################################
 # 4. SET LAYOUT
 app.layout = html.Div(children=[
     html.H1(children='South Korea COVID-19 Dashboard'),
