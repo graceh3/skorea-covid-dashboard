@@ -61,7 +61,7 @@ fig_1 = px.choropleth_mapbox(df_prov_patients, geojson=geojson_1, color="Number 
                            color_continuous_scale='amp',
                            locations="province", featureidkey="properties.NAME_1",
                            center={"lat": 36.7331489, "lon": 128.1328623},
-                           mapbox_style="carto-positron", zoom=5, opacity=.33)
+                           mapbox_style="carto-positron", zoom=5, opacity=.33, title='Number of Patients by Province')
 
 
 ######################################
