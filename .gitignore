@@ -1,3 +1,7 @@
 .ipynb_checkpoints
 .log
 npm-debug.log
+env
+*.pyc
+.DS_Store
+.env
