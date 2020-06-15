@@ -72,7 +72,9 @@ app.layout = html.Div(children=[
     html.H1(children='South Korea COVID-19 Dashboard'),
     html.H2(children='Data as of 2020-05-31'),
 
-    dash_table.DataTable(id='quick-stats'
+    html.Div(children=[
+                    html.H3(children='Quick Statistics'),
+                    dash_table.DataTable(id='quick-stats'
                         ,columns=[{"name": i, "id": i} for i in ['Statistic', 'Value']]
                         ,data=data_quickstats
                         ,style_header={'fontWeight':'bold', 'backgroundColor':'grey'}
@@ -83,7 +85,7 @@ app.layout = html.Div(children=[
                                     {'if': {'column_id': 'Value'},
                                             'width': '30%',  'textAlign':'left'},
                                                 ]
-                        ,style_as_list_view=True
+                        ,style_as_list_view=True)]
                         ),
 
     dcc.Graph(
