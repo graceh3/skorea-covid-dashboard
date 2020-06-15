@@ -69,7 +69,7 @@ fig_1 = px.choropleth_mapbox(df_prov_patients, geojson=geojson_1, color="Number 
 ######################################
 # 4. SET LAYOUT
 app.layout = html.Div(children=[
-    html.H1(children='South Korea COVID-19 Dashboard'),
+    html.H1(children='South Korea COVID-19 Dashboard', style={'textAlign': 'center'}),
     html.H2(children='Data as of 2020-05-31'),
 
     html.Div(children=[
@@ -101,8 +101,8 @@ app.layout = html.Div(children=[
         value=df_confirmed_by_case.sort_values(by='total_confirmed', ascending=False)['infection_case'][:11],
         multi=True,
         style={
-                        'height': '60px',
-                        'display': 'inline-block'
+                        'height': '100px',
+                        'display': 'block'
                     }
     ),
     
@@ -119,7 +119,8 @@ app.layout = html.Div(children=[
     )
     
 
-])
+],
+    style={'padding': 200, 'padding-top': '7vh'})
 
 ######################################
 # 5. ADD CALLBACKS
