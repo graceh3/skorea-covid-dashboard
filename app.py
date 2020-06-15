@@ -50,6 +50,10 @@ df_confirmed_by_case.rename(columns={'confirmed':'total_confirmed'},inplace=True
 df_prov_patients = df_patients[['province', 'patient_id']].groupby('province', as_index=False).count()
 df_prov_patients = df_prov_patients.rename(columns={'patient_id':'Number of Patients'})
 
+# 2e. Gender & State
+df_gender_state = df_patients[['state','sex','patient_id']].groupby(['state','sex'], as_index=False).count().sort_values(by='patient_id', ascending=False)
+df_gender_state = df_gender_state.rename(columns={'patient_id':'Number of Patients'})
+
 ######################################
 # 3. CREATE PLOTLY FIGURES
 
@@ -91,7 +95,13 @@ app.layout = html.Div(children=[
         id='total-confirmed-cases',
         figure=px.bar(df_confirmed_by_case.sort_values(by=['total_confirmed'], ascending=True), x="total_confirmed", y="infection_case", orientation='h', height=1000,
              title='Total Confirmed by Infection Case')
-        )
+        ),
+
+    dcc.Graph(
+        id='state-gender',
+        figure=px.bar(df_gender_state, x="state", y="Number of Patients", color='sex', barmode='group',
+             height=500, title='State of Patients by Gender')
+    )
     
 
 ])
