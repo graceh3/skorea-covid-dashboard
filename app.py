@@ -18,7 +18,6 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 server = app.server
 
-
 ######################################
 # 2. IMPORT & SET DATA
 df_case = pd.read_csv('./data/Case.csv')
