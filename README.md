@@ -1,7 +1,7 @@
-# skorea-covid-dashboard
+# Dashboard of South Korea's COVID-19  Data
 
 <u>Data Source: <br></u>
-https://www.kaggle.com/kimjihoo/coronavirusdataset
+https://www.kaggle.com/kimjihoo/coronavirusdataset<br>
 https://www.kaggle.com/kimjihoo/ds4c-what-is-this-dataset-detailed-description?select=Case.csv
 
 <u>Purpose:<br></u>
