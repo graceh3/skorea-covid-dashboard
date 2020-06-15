@@ -91,6 +91,13 @@ app.layout = html.Div(children=[
     
     dcc.Graph(id ='map', figure = fig_1),
 
+    dcc.Dropdown(
+        id='cases-dropdown',
+        options=[{'label': i, 'value': i} for i in df_confirmed_by_case['infection_case']],
+        value=df_confirmed_by_case.sort_values(by='total_confirmed', ascending=False)['infection_case'][:11],
+        multi=True
+    ),
+    
     dcc.Graph(
         id='total-confirmed-cases',
         figure=px.bar(df_confirmed_by_case.sort_values(by=['total_confirmed'], ascending=True), x="total_confirmed", y="infection_case", orientation='h', height=1000,
@@ -100,12 +107,24 @@ app.layout = html.Div(children=[
     dcc.Graph(
         id='state-gender',
         figure=px.bar(df_gender_state, x="state", y="Number of Patients", color='sex', barmode='group',
-             height=500, title='State of Patients by Gender')
+             height=500, title='Distribution of Patients by State & Gender')
     )
     
 
 ])
 
-# 5. Set the executable command
+######################################
+# 5. ADD CALLBACKS
+@app.callback(
+    dash.dependencies.Output('total-confirmed-cases', 'figure'),
+    [dash.dependencies.Input('cases-dropdown', 'value')]
+)
+def update_output(input_values):
+    df_filtered = df_confirmed_by_case[df_confirmed_by_case['infection_case'].isin(input_values)]
+    return px.bar(df_filtered.sort_values(by=['total_confirmed'], ascending=True), x="total_confirmed", y="infection_case", orientation='h', height=1000,
+             title='Total Confirmed by Infection Case')
+
+######################################
+# 6. SET EXECUTABLE COMMAND
 if __name__ == '__main__':
     app.run_server(debug=True)
