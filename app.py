@@ -97,7 +97,11 @@ app.layout = html.Div(children=[
         id='cases-dropdown',
         options=[{'label': i, 'value': i} for i in df_confirmed_by_case['infection_case']],
         value=df_confirmed_by_case.sort_values(by='total_confirmed', ascending=False)['infection_case'][:11],
-        multi=True
+        multi=True,
+        style={
+                        'height': '60px',
+                        'display': 'inline-block'
+                    }
     ),
     
     dcc.Graph(
